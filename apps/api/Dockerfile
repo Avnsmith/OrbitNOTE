@@ -22,6 +22,7 @@ COPY apps/api ./apps/api
 # ── 3. Build shared packages first, then API ────────────────────────────────
 RUN pnpm --filter @orbitnote/shared build
 RUN pnpm --filter @orbitnote/spacecomputer build
+RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
 RUN pnpm --filter api run build
 
 # ── 4. Prune dev dependencies ───────────────────────────────────────────────
