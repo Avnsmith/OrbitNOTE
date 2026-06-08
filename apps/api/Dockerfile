@@ -22,7 +22,7 @@ COPY apps/api ./apps/api
 # ── 3. Build shared packages first, then API ────────────────────────────────
 RUN pnpm --filter @orbitnote/shared build
 RUN pnpm --filter @orbitnote/spacecomputer build
-RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
+RUN pnpm --filter api exec prisma generate --schema=prisma/schema.prisma
 RUN pnpm --filter api run build
 
 # ── 4. Prune dev dependencies ───────────────────────────────────────────────
@@ -41,10 +41,10 @@ WORKDIR /app
 COPY --from=base /prod .
 
 # Generate Prisma client for production target
-RUN npx prisma generate --schema=prisma/schema.prisma
+RUN ./node_modules/.bin/prisma generate --schema=prisma/schema.prisma
 
 EXPOSE 3001
 
 ENV NODE_ENV=production
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
+CMD ["sh", "-c", "./node_modules/.bin/prisma migrate deploy && node dist/main"]
